@@ -1,13 +1,19 @@
-name: Build Debian Package
-on: [push]
+name: Build and Release .deb
+
+on:
+  push:
+    branches: [ "main" ]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Install GUI Dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libx11-dev libxcursor-dev libxinerama-dev libxrandr-dev libxi-dev libgl1-mesa-dev libxkbcommon-dev
@@ -21,8 +27,11 @@ jobs:
       - name: Build .deb
         run: cargo deb
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: aryan-egui-app
-          path: target/debian/*.deb
+          tag_name: latest
+          files: target/debian/*.deb
+          body: "markdown-live-preview release"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
