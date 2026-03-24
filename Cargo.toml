@@ -1,0 +1,20 @@
+[package]
+name = "egui"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chrono = { version = "0.4.44", features = ["serde"] }
+eframe = "0.33.3"
+egui_commonmark = "0.22.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+
+[package.metadata.deb]
+maintainer = "Aryan Kumar <aryan17550@gmail.com>"
+depends = "$auto, libx11-6, libxcursor1, libxinerama1, libxi6, libgl1"
+section = "utils"
+priority = "optional"
+assets = [
+    ["target/release/egui", "usr/bin/egui", "755"],
+]
